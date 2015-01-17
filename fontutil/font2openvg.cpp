@@ -109,9 +109,9 @@ int main (int argc, char * const argv[])
 	std::vector<float>		gbbox;
 	std::vector<float>		advances;
 
-	unsigned int characterMap[256];
+        unsigned int characterMap[500];
 	int glyphs = 0;
-	for(int cc=0;cc<256;cc++)
+        for(int cc=0;cc<500;cc++)
 	{
 		characterMap[cc] = 0xffffffffu;	//initially nonexistent
 
@@ -357,12 +357,12 @@ int main (int argc, char * const argv[])
 
 	//print the number of glyphs and the character map
 	fprintf (f,"static const int %s_glyphCount = %d;\n",argv[3],glyphs);
-	fprintf (f,"static const short %s_characterMap[256] = {", argv[3]);
-	for(int i=0;i<256;i++)
+        fprintf (f,"static const short %s_characterMap[500] = {", argv[3]);
+        for(int i=0;i<500;i++)
 	{
 		if ((i % 20)==0)
 			fprintf (f,"\n    ");
-		fprintf (f,"%d%c",characterMap[i],(i==(256-1))?' ':',');
+                fprintf (f,"%d%c",characterMap[i],(i==(500-1))?' ':',');
 	}
 	fprintf (f,"};\n\n");
 	fclose(f);

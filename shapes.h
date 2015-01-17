@@ -8,10 +8,14 @@ extern "C" {
 	extern void Rotate(VGfloat);
 	extern void Shear(VGfloat, VGfloat);
 	extern void Scale(VGfloat, VGfloat);
-	extern void Text(VGfloat, VGfloat, char *, Fontinfo, int);
-	extern void TextMid(VGfloat, VGfloat, char *, Fontinfo, int);
-	extern void TextEnd(VGfloat, VGfloat, char *, Fontinfo, int);
-	extern VGfloat TextWidth(char *, Fontinfo, int);
+        extern void Text(VGfloat, VGfloat, char *, Fontinfo, int);
+        extern void WText(VGfloat, VGfloat, wchar_t *, Fontinfo, int);
+        extern void TextMid(VGfloat, VGfloat, char *, Fontinfo, int);
+        extern void WTextMid(VGfloat, VGfloat, wchar_t *, Fontinfo, int);
+        extern void TextEnd(VGfloat, VGfloat, char *, Fontinfo, int);
+        extern void WTextEnd(VGfloat, VGfloat, wchar_t *, Fontinfo, int);
+        extern VGfloat TextWidth(char *, Fontinfo, int);
+        extern VGfloat WTextWidth(wchar_t *, Fontinfo, int);
 	extern void Cbezier(VGfloat, VGfloat, VGfloat, VGfloat, VGfloat, VGfloat, VGfloat, VGfloat);
 	extern void Qbezier(VGfloat, VGfloat, VGfloat, VGfloat, VGfloat, VGfloat);
 	extern void Polygon(VGfloat *, VGfloat *, VGint);

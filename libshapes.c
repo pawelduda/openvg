@@ -7,6 +7,7 @@
 #include <termios.h>
 #include <assert.h>
 #include <jpeglib.h>
+#include <wchar.h>
 #include "VG/openvg.h"
 #include "VG/vgu.h"
 #include "EGL/egl.h"
@@ -18,7 +19,7 @@
 #include "eglstate.h"					   // data structures for graphics state
 #include "fontinfo.h"					   // font data structure
 static STATE_T _state, *state = &_state;	// global graphics state
-static const int MAXFONTPATH = 256;
+static const int MAXFONTPATH = 500;
 //
 // Terminal settings
 //
@@ -410,12 +411,54 @@ void Text(VGfloat x, VGfloat y, char *s, Fontinfo f, int pointsize) {
 	vgLoadMatrix(mm);
 }
 
+void WText(VGfloat x, VGfloat y, wchar_t *s, Fontinfo f, int pointsize) {
+	VGfloat size = (VGfloat) pointsize, xx = x, mm[9];
+	int i;
+
+	vgGetMatrix(mm);
+	for (i = 0; i < (int)wcslen(s); i++) {
+		unsigned int character = (unsigned int)s[i];
+		// printf("test %d", character);
+		int glyph = f.CharacterMap[character];
+		if (glyph == -1) {
+			continue;			   //glyph is undefined
+		}
+		VGfloat mat[9] = {
+			size, 0.0f, 0.0f,
+			0.0f, size, 0.0f,
+			xx, y, 1.0f
+		};
+		vgLoadMatrix(mm);
+		vgMultMatrix(mat);
+		vgDrawPath(f.Glyphs[glyph], VG_FILL_PATH);
+		xx += size * f.GlyphAdvances[glyph] / 65536.0f;
+	}
+	vgLoadMatrix(mm);
+}
+
 // TextWidth returns the width of a text string at the specified font and size.
+// VGfloat TextWidth(char *s, Fontinfo f, int pointsize) {
 VGfloat TextWidth(char *s, Fontinfo f, int pointsize) {
 	int i;
 	VGfloat tw = 0.0;
 	VGfloat size = (VGfloat) pointsize;
 	for (i = 0; i < (int)strlen(s); i++) {
+		unsigned int character = (unsigned int)s[i];
+		int glyph = f.CharacterMap[character];
+		if (glyph == -1) {
+			continue;			   //glyph is undefined
+		}
+		tw += size * f.GlyphAdvances[glyph] / 65536.0f;
+	}
+	return tw;
+}
+
+VGfloat WTextWidth(wchar_t *s, Fontinfo f, int pointsize) {
+	int i;
+	VGfloat tw = 0.0;
+	VGfloat size = (VGfloat) pointsize;
+	// for (i = 0; i < (int)strlen(s); i++) {
+	for (i = 0; i < (int)wcslen(s); i++) {
 		unsigned int character = (unsigned int)s[i];
 		int glyph = f.CharacterMap[character];
 		if (glyph == -1) {
@@ -432,10 +475,20 @@ void TextMid(VGfloat x, VGfloat y, char *s, Fontinfo f, int pointsize) {
 	Text(x - (tw / 2.0), y, s, f, pointsize);
 }
 
+void WTextMid(VGfloat x, VGfloat y, wchar_t *s, Fontinfo f, int pointsize) {
+	VGfloat tw = WTextWidth(s, f, pointsize);
+	WText(x - (tw / 2.0), y, s, f, pointsize);
+}
+
 // TextEnd draws text, with its end aligned to (x,y)
 void TextEnd(VGfloat x, VGfloat y, char *s, Fontinfo f, int pointsize) {
 	VGfloat tw = TextWidth(s, f, pointsize);
 	Text(x - tw, y, s, f, pointsize);
+}
+
+void WTextEnd(VGfloat x, VGfloat y, wchar_t *s, Fontinfo f, int pointsize) {
+	VGfloat tw = WTextWidth(s, f, pointsize);
+	WText(x - tw, y, s, f, pointsize);
 }
 
 //

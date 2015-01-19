@@ -8,10 +8,10 @@ extern "C" {
 		const short *CharacterMap;
 		const int *GlyphAdvances;
 		int Count;
-                VGPath Glyphs[500];
+                VGPath Glyphs[400];
 	} Fontinfo;
 
-        extern Fontinfo SansTypeface, SerifTypeface, MonoTypeface;
+        extern Fontinfo SansTypeface;
 
 #if defined(__cplusplus)
 }

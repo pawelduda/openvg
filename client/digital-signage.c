@@ -15,11 +15,6 @@
 #include "shapes.h"
 #include "digital_signage.h"
 
-double clamp(double d, double min, double max) {
-	const double t = d < min ? min : d;
-	return t > max ? max : t;
-}
-
 struct NEWS_TICKER nt = {
 	.pos_x = 20,
 	.pos_y = 20,
@@ -28,7 +23,7 @@ struct NEWS_TICKER nt = {
 	.font_size = 20,
 	.scroll_speed = 3,
 	.fade_speed = 0.05,
-	.display_time = 1,
+	.display_time = 2,
 
 	.cur_pos_x = 20,
 	.cur_msg_index = 0,
@@ -38,6 +33,11 @@ struct NEWS_TICKER nt = {
 	.current_alpha = 0,
 	.content = { L"óśóśóśóśóśóśóśóśóśśóśóóśśóśóśóóśśóśółśąśóśóśóśóśóśóśóśóśóśśóśóóśśóśółśąś  ipsdasdasdumloremlorem óśóśóśóśóśóśóśóśóśśóśóóśśóśółśąś ipsdasdasdumlorem", L"testowa wiadomość óóó", L"ttt ipsdasdasdumloremlorem óśóśóśóśóśóśóśóśóśśóśóóśśóśółśąś" }
 };
+
+double clamp(double d, double min, double max) {
+	const double t = d < min ? min : d;
+	return t > max ? max : t;
+}
 
 void Fade(struct NEWS_TICKER *nt) {
 	if (nt->fades_in && nt->current_alpha <= 1) {
@@ -83,7 +83,7 @@ bool IsScrollFinished(struct NEWS_TICKER *nt) {
 	return false;
 }
 
-void DrawNewsTicker(struct NEWS_TICKER *nt) {
+void UpdateNewsTicker(struct NEWS_TICKER *nt) {
 	// fade in, then stop
 	if (nt->fades_in) {
 		if (IsFadeFinished(nt)) {
@@ -127,8 +127,7 @@ void DrawNewsTicker(struct NEWS_TICKER *nt) {
 
 	Fade(nt);
 
-	Fill(255, 255, 255, nt->current_alpha);
-	WText(nt->cur_pos_x, 20, nt->content[nt->cur_msg_index], *nt->font, nt->font_size);
+
 }
 
 void ALARMhandler(int sig) {
@@ -138,12 +137,13 @@ void ALARMhandler(int sig) {
 }
 
 int main(int argc, char **argv) {
+
  	signal(SIGALRM, ALARMhandler);
  	time_t rawtime;
  	struct tm *timeinfo;
  	char time_formatted[30];
 
-	int width, height;
+	int width, height, circleX;
 	VGImage img1, bg, avatar;
 
 	width = 1920;
@@ -157,49 +157,65 @@ int main(int argc, char **argv) {
 
 	while (1) {
 		vgSetPixels(0, 0, bg, 0, 0, 1920, 1080);
-		
-		Fill(21, 41, 82, 1);
-		Rect(0, 880, 1920, 200);
-		Rect(0, 0, 1920, 60);
-
 		vgSetPixels(70, 150, avatar, 0, 0, 300, 248);
 		vgSetPixels(70, 550, avatar, 0, 0, 300, 248);
 		vgSetPixels(950, 150, avatar, 0, 0, 300, 248);
 		vgSetPixels(950, 550, avatar, 0, 0, 300, 248);
-		
-		Fill(255, 255, 255, 1);
+
+		Fill(21, 41, 82, 1);
 		Stroke(0, 0, 0, 1);
 		StrokeWidth(2);
-		WText(410, 350, L"Sample First Name Last Name", SansTypeface, 24);
-		WText(410, 300, L"Sample Text:", SansTypeface, 20);
+		Rect(-5, 880, 1930, 200);
+		Rect(-5, 0, 1930, 60);
+		
+		Fill(255, 255, 255, 1);
+		WText(410, 350, L"First name last name", SansTypeface, 24);
+		WText(410, 300, L"Sample text:", SansTypeface, 20);
 		WText(410, 260, L"Śr 15:30-17:30", SansTypeface, 20);
 		WText(410, 220, L"Czw 12:00-15:00", SansTypeface, 20);
 
-		WText(410, 750, L"Sample First Name Last Name", SansTypeface, 24);
-		WText(410, 700, L"Sample Text:", SansTypeface, 20);
+		WText(410, 750, L"First name last name", SansTypeface, 24);
+		WText(410, 700, L"Sample text:", SansTypeface, 20);
 		WText(410, 660, L"Śr 15:30-17:30", SansTypeface, 20);
 		WText(410, 620, L"Czw 12:00-15:00", SansTypeface, 20);
 
-		WText(1290, 350, L"Sample First Name Last Name", SansTypeface, 24);
-		WText(1290, 300, L"Sample Text:", SansTypeface, 20);
+		WText(1290, 350, L"First name last name", SansTypeface, 24);
+		WText(1290, 300, L"Sample text:", SansTypeface, 20);
 		WText(1290, 260, L"Śr 15:30-17:30", SansTypeface, 20);
 		WText(1290, 220, L"Czw 12:00-15:00", SansTypeface, 20);
 
-		WText(1290, 750, L"Sample First Name Last Name", SansTypeface, 24);
-		WText(1290, 700, L"Sample Text:", SansTypeface, 20);
+		WText(1290, 750, L"First name last name", SansTypeface, 24);
+		WText(1290, 700, L"Sample text:", SansTypeface, 20);
 		WText(1290, 660, L"Śr 15:30-17:30", SansTypeface, 20);
 		WText(1290, 620, L"Czw 12:00-15:00", SansTypeface, 20);
 
 		Fill(255, 255, 255, 1);
 		WText(50, 990, L"Sample header", SansTypeface, 40);
-		WText(50, 930, L"Sample subheader sample subheader", SansTypeface, 30);
+		WText(50, 930, L"Sample header sample header", SansTypeface, 30);
+
+		Text(1490, 1000, time_formatted, SansTypeface, 24);
+	 	
+		Fill(21, 41, 82, 1);
+	 	
+	 	Circle(914, 85, 25);
+	 	Circle(953, 85, 25);
+	 	Circle(992, 85, 25);
+
+		Fill(255, 255, 255, nt.current_alpha);
+	 	
+		circleX = 914 + 39 * nt.cur_msg_index;
+
+		StrokeWidth(0);
+
+	 	Circle(circleX, 85, 21);
+
+		WText(nt.cur_pos_x, 20, nt.content[nt.cur_msg_index], *nt.font, nt.font_size);
 
 	 	time(&rawtime);
 	 	timeinfo = localtime(&rawtime);
 		strftime(time_formatted, 30, "%d.%m.%Y @ %H:%M:%S", timeinfo);
-		Text(1490, 1000, time_formatted, SansTypeface, 24);
 
-		DrawNewsTicker(&nt);
+		UpdateNewsTicker(&nt);
 
 		End();
 	}

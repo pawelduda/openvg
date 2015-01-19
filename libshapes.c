@@ -14,12 +14,10 @@
 #include "GLES/gl.h"
 #include "bcm_host.h"
 #include "DejaVuSans.inc"				   // font data
-#include "DejaVuSerif.inc"
-#include "DejaVuSansMono.inc"
 #include "eglstate.h"					   // data structures for graphics state
 #include "fontinfo.h"					   // font data structure
 static STATE_T _state, *state = &_state;	// global graphics state
-static const int MAXFONTPATH = 500;
+static const int MAXFONTPATH = 400;
 //
 // Terminal settings
 //
@@ -213,7 +211,7 @@ void dumpscreen(int w, int h, FILE * fp) {
 	free(ScreenBuffer);
 }
 
-Fontinfo SansTypeface, SerifTypeface, MonoTypeface;
+Fontinfo SansTypeface;
 
 // init sets the system to its initial state
 void init(int *w, int *h) {
@@ -227,20 +225,6 @@ void init(int *w, int *h) {
 				DejaVuSans_glyphInstructionCounts,
 				DejaVuSans_glyphAdvances, DejaVuSans_characterMap, DejaVuSans_glyphCount);
 
-	SerifTypeface = loadfont(DejaVuSerif_glyphPoints,
-				 DejaVuSerif_glyphPointIndices,
-				 DejaVuSerif_glyphInstructions,
-				 DejaVuSerif_glyphInstructionIndices,
-				 DejaVuSerif_glyphInstructionCounts,
-				 DejaVuSerif_glyphAdvances, DejaVuSerif_characterMap, DejaVuSerif_glyphCount);
-
-	MonoTypeface = loadfont(DejaVuSansMono_glyphPoints,
-				DejaVuSansMono_glyphPointIndices,
-				DejaVuSansMono_glyphInstructions,
-				DejaVuSansMono_glyphInstructionIndices,
-				DejaVuSansMono_glyphInstructionCounts,
-				DejaVuSansMono_glyphAdvances, DejaVuSansMono_characterMap, DejaVuSansMono_glyphCount);
-
 	*w = state->screen_width;
 	*h = state->screen_height;
 }
@@ -248,8 +232,6 @@ void init(int *w, int *h) {
 // finish cleans up
 void finish() {
 	unloadfont(SansTypeface.Glyphs, SansTypeface.Count);
-	unloadfont(SerifTypeface.Glyphs, SerifTypeface.Count);
-	unloadfont(MonoTypeface.Glyphs, MonoTypeface.Count);
 	glClear(GL_COLOR_BUFFER_BIT);
 	eglSwapBuffers(state->display, state->surface);
 	eglMakeCurrent(state->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
@@ -418,7 +400,7 @@ void WText(VGfloat x, VGfloat y, wchar_t *s, Fontinfo f, int pointsize) {
 	vgGetMatrix(mm);
 	for (i = 0; i < (int)wcslen(s); i++) {
 		unsigned int character = (unsigned int)s[i];
-		// printf("test %d", character);
+
 		int glyph = f.CharacterMap[character];
 		if (glyph == -1) {
 			continue;			   //glyph is undefined

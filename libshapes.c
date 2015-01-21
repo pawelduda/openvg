@@ -579,7 +579,7 @@ void Arc(VGfloat x, VGfloat y, VGfloat w, VGfloat h, VGfloat sa, VGfloat aext) {
 
 // Start begins the picture, clearing a rectangular region with a specified color
 void Start(int width, int height) {
-	VGfloat color[4] = { 255, 255, 255, 1 };
+	VGfloat color[4] = { 255, 255, 255, 0 };
 	vgSetfv(VG_CLEAR_COLOR, 4, color);
 	vgClear(0, 0, width, height);
 	color[0] = 0, color[1] = 0, color[2] = 0;
@@ -591,9 +591,16 @@ void Start(int width, int height) {
 
 // End checks for errors, and renders to the display
 void End() {
-	assert(vgGetError() == VG_NO_ERROR);
+	// assert(vgGetError() == VG_NO_ERROR);
 	eglSwapBuffers(state->display, state->surface);
-	assert(eglGetError() == EGL_SUCCESS);
+	// assert(eglGetError() == EGL_SUCCESS);
+}
+
+// Creates transparent background
+void Clear(int width, int height) {
+	VGfloat color[4] = { 255, 255, 255, 0 };
+	vgSetfv(VG_CLEAR_COLOR, 4, color);
+	vgClear(0, 0, width, height);
 }
 
 // SaveEnd dumps the raster before rendering to the display 

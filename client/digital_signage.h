@@ -17,6 +17,7 @@ struct NEWS_TICKER {
         time_t start_i;
         time_t cur_i;
 
+        int msg_count;
         wchar_t content[4][200];
 };
 
@@ -25,13 +26,18 @@ struct PERSON_INFO {
         char qrcode_filename[50];
         wchar_t name[100];
         wchar_t text[10][200];
+        VGImage avatar;
+        VGImage qrcode;
 };
 
 struct PEOPLE_LIST {
         int cur_index;
         double display_time;
         double fade_speed;
+        int start_pos_x;
+        int cur_pos_x;
 
+        int people_count;
         struct PERSON_INFO *people[4];
 
         bool fades_in;

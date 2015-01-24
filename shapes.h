@@ -27,6 +27,7 @@ extern "C" {
 	extern void Image(VGfloat, VGfloat, int, int, char *);
 	extern void Start(int, int);
 	extern void End();
+        extern void Clear(int, int);
 	extern void SaveEnd(char *);
 	extern void Background(unsigned int, unsigned int, unsigned int);
 	extern void BackgroundRGB(unsigned int, unsigned int, unsigned int, VGfloat);
@@ -44,6 +45,7 @@ extern "C" {
 	extern Fontinfo loadfont(const int *, const int *, const unsigned char *, const int *, const int *, const int *,
 				 const short *, int);
 	extern void unloadfont(VGPath *, int);
+        extern VGImage createImageFromJpeg(const char *);
 	extern void makeimage(VGfloat, VGfloat, int, int, VGubyte *);
 	extern void saveterm();
 	extern void restoreterm();

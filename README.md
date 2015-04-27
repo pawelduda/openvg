@@ -4,8 +4,6 @@ There are two cases when the program crashes:
 1. The screen freezes and the process goes into D state.
 2. Random shapes appear on the screen, the process doesn't freeze but slows down by a lot.
 
-<a href="http://www29.speedyshare.com/jZ6Xd/download/IMG-20150117-171229.jpg">Example photo of crash. Notice how display artifacts are somehow bound to all "r" characters seen on that screenshot.</a>
-
 ## Build and run
 
 <i>Note that you will need at least 64 Mbytes of GPU RAM:</i>. You will also need the DejaVu fonts, and the jpeg and freetype libraries.

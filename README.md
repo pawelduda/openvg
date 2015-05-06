@@ -1,5 +1,7 @@
 # Experimental fork with sample program that crashes after some time.
 
+https://github.com/ajstarks/openvg/issues/22
+
 There are two cases when the program crashes:
 1. The screen freezes and the process goes into D state.
 2. Random shapes appear on the screen, the process doesn't freeze but slows down by a lot.
